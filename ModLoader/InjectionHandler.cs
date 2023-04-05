@@ -48,23 +48,23 @@ namespace ModLoader
 
         #endregion
 
-        private static void PostMessage(string str)
+        private static void PostMessage(string str, string path, InjectState state)
         {
             if (injectionStagedEvent != null)
             {
-                injectionStagedEvent.Invoke(null, new InjectEventArgs(str));
+                injectionStagedEvent.Invoke(null, new InjectEventArgs(str, path, state));
             }
         }
 
         public static void InjectDLL(string path, string proc = "Minecraft.Windows")
         {
-            PostMessage("Finding process");
+            PostMessage("Finding process", path, InjectState.Finding);
 
             Process[] targetProcessIndex = Process.GetProcessesByName(proc);
 
             if (targetProcessIndex.Length > 0)
             {
-                PostMessage("Applying packages");
+                PostMessage("Applying packages", path, InjectState.Applying);
                 applyAllApplicationPackages(path);
 
                 Process targetProcess = targetProcessIndex[0];
@@ -74,16 +74,16 @@ namespace ModLoader
 
                 IntPtr allocMemAddress = VirtualAllocEx(procHandle, IntPtr.Zero, (uint)((path.Length + 1) * Marshal.SizeOf(typeof(char))), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 
-                PostMessage("Injecting");
+                PostMessage("Injecting", path, InjectState.Injecting);
                 UIntPtr bytesWritten;
                 WriteProcessMemory(procHandle, allocMemAddress, Encoding.Default.GetBytes(path), (uint)((path.Length + 1) * Marshal.SizeOf(typeof(char))), out bytesWritten);
                 CreateRemoteThread(procHandle, IntPtr.Zero, 0, loadLibraryAddr, allocMemAddress, 0, IntPtr.Zero);
 
-                PostMessage("Injected!");
+                PostMessage("Injected!", path, InjectState.Idle);
             }
             else
             {
-                PostMessage("No Minecraft Found (Is it open?)");
+                PostMessage("No Minecraft Found (Is it open?)", path, InjectState.NoMinecraftFound);
             }
         }
         public static void applyAllApplicationPackages(string path)
@@ -95,12 +95,22 @@ namespace ModLoader
         }
     }
 
+    public enum InjectState
+    {
+        Idle, Finding, Applying, Injecting, NoMinecraftFound
+    }
+
     class InjectEventArgs : EventArgs
     {
-        public string injectionStage;
-        public InjectEventArgs(string injectionStage)
+        public string Message;
+        public string DllPath;
+        public InjectState State;
+
+        public InjectEventArgs(string injectionStage, string path, InjectState state)
         {
-            this.injectionStage = injectionStage;
+            this.Message = injectionStage;
+            this.DllPath = path;
+            this.State = state;
         }
     }
 }

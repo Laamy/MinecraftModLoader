@@ -84,7 +84,6 @@ namespace ModLoader
                 if (fi.Extension == ".dll")
                 {
                     InjectionHandler.InjectDLL(file);
-                    Print($"Injected {fi.Name}");
                 }
             }
 
@@ -93,7 +92,17 @@ namespace ModLoader
 
         private static void hookEvent(object sender, InjectEventArgs e)
         {
-            Print(e.injectionStage);
+            FileInfo file = new FileInfo(e.DllPath);
+
+            if (e.State == InjectState.Idle)
+            {
+                Print($"Injected {file.Name}");
+            }
+
+            if (e.State == InjectState.NoMinecraftFound)
+            {
+                Print($"Failed to inject {file.Name}");
+            }
         }
     }
 }
