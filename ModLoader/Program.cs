@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -6,9 +7,8 @@ namespace ModLoader
 {
     internal class Program
     {
-        static void Main(string[] args)
-        {
-            string[] logo = @"      ___           ___                   
+        public static List<string> _console = new List<string>();
+        public static string[] logo = @"      ___           ___                   
      /__/\         /__/\                  
     |  |::\       |  |::\                 
     |  |:|:\      |  |:|:\    ___     ___ 
@@ -20,28 +20,57 @@ namespace ModLoader
     \  \:\        \  \:\         \__\/    
      \__\/         \__\/                  ".Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
-            foreach (string logoItem in logo)
+        public static void Print(string message = null)
+        {
+            Console.Clear();
+
+            for (int i = 0; i < logo.Length; i++)
             {
-                Console.SetCursorPosition((Console.WindowWidth - logoItem.Length) / 2, Console.CursorTop);
-                Console.WriteLine(logoItem);
+                string logoItem = logo[i];
+
+                Console.SetCursorPosition((Console.WindowWidth - logoItem.Length) / 2, i);
+                Console.Write(logoItem);
             }
+
+            Console.WriteLine();
+
+            if (message != null)
+            {
+                _console.Add(message);
+            }
+
+            foreach (string str in _console)
+            {
+                Console.WriteLine(str);
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            FileIO.Initialize();
+
             Task.Factory.StartNew(() =>
             {
-                Console.Cur
-                foreach (string logoItem in logo)
-                {
+                int consoleWidth = Console.WindowWidth;
 
-                    Console.SetCursorPosition((Console.WindowWidth - logoItem.Length) / 2, Console.CursorTop);
-                    Console.Write(logoItem);
-                }
+                while (true) try
+                    {
+                        Task.Delay(50);
+
+                        if (Console.WindowWidth != consoleWidth)
+                        {
+                            consoleWidth = Console.WindowWidth;
+                            Print();
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException) { } // kill errors
+                    catch (IOException) { }
             });
-
-            FileIO.Initialize();
 
             if (FileIO.Folders.CheckCreate("mods"))
             {
-                Console.WriteLine("MML initialized, please go to this uri in your file explorer.");
-                Console.WriteLine(FileIO.ConfigFolder.FullName);
+                Print("MML initialized, please go to this uri in your file explorer.");
+                Print(FileIO.ConfigFolder.FullName);
                 //Console.WriteLine();
                 Console.ReadKey();
             }
@@ -55,7 +84,7 @@ namespace ModLoader
                 if (fi.Extension == ".dll")
                 {
                     InjectionHandler.InjectDLL(file);
-                    Console.WriteLine($"Injected {fi.Name}");
+                    Print($"Injected {fi.Name}");
                 }
             }
 
@@ -64,7 +93,7 @@ namespace ModLoader
 
         private static void hookEvent(object sender, InjectEventArgs e)
         {
-            Console.WriteLine(e.injectionStage);
+            Print(e.injectionStage);
         }
     }
 }
