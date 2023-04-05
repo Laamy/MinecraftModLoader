@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace ModLoader
 {
@@ -7,8 +8,33 @@ namespace ModLoader
     {
         static void Main(string[] args)
         {
+            string[] logo = @"      ___           ___                   
+     /__/\         /__/\                  
+    |  |::\       |  |::\                 
+    |  |:|:\      |  |:|:\    ___     ___ 
+  __|__|:|\:\   __|__|:|\:\  /__/\   /  /\
+ /__/::::| \:\ /__/::::| \:\ \  \:\ /  /:/
+ \  \:\~~\__\/ \  \:\~~\__\/  \  \:\  /:/ 
+  \  \:\        \  \:\         \  \:\/:/  
+   \  \:\        \  \:\         \  \::/   
+    \  \:\        \  \:\         \__\/    
+     \__\/         \__\/                  ".Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
+            foreach (string logoItem in logo)
+            {
+                Console.SetCursorPosition((Console.WindowWidth - logoItem.Length) / 2, Console.CursorTop);
+                Console.WriteLine(logoItem);
+            }
+            Task.Factory.StartNew(() =>
+            {
+                Console.Cur
+                foreach (string logoItem in logo)
+                {
 
+                    Console.SetCursorPosition((Console.WindowWidth - logoItem.Length) / 2, Console.CursorTop);
+                    Console.Write(logoItem);
+                }
+            });
 
             FileIO.Initialize();
 
