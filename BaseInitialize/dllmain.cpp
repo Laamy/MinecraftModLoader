@@ -1,10 +1,5 @@
+// dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
-
-__declspec(dllexport)
-void InitAPI()
-{
-    // test export
-}
 
 BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved)
 {
@@ -14,3 +9,4 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved)
     }
     return TRUE;
 }
+
