@@ -8,16 +8,15 @@ namespace ModLoader
         {
             FileIO.Initialize();
 
-            Console.WriteLine(FileIO.ConfigFolder.FullName);
-
             if (FileIO.Folders.CheckCreate("mods"))
             {
+                Console.WriteLine("MML initialized, please go to this uri in your file explorer.");
+                Console.WriteLine(FileIO.ConfigFolder.FullName);
+                //Console.WriteLine();
+                Console.ReadKey();
+            }
 
-            }
-            else
-            {
-                // inject mods
-            }
+            // inject mods
         }
     }
 }
