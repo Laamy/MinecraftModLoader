@@ -7,9 +7,6 @@ namespace ModLoader
     {
         static void Main(string[] args)
         {
-
-
-
             FileIO.Initialize();
 
             if (FileIO.Folders.CheckCreate("mods"))
