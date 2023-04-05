@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace ModLoader
 {
@@ -17,6 +18,17 @@ namespace ModLoader
             }
 
             // inject mods
+            foreach (string file in Directory.GetFiles($"{FileIO.ConfigFolder.FullName}\\mods"))
+            {
+                FileInfo fi = new FileInfo(file);
+                if (fi.Extension == ".dll")
+                {
+                    InjectionHandler.InjectDLL(file);
+                    Console.WriteLine($"Injected {fi.Name}");
+                }
+            }
+
+            Console.ReadLine();
         }
     }
 }

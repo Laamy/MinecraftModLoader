@@ -56,7 +56,7 @@ namespace ModLoader
             }
         }
 
-        public static void InjectDLL(string path, string proc) // "Minecraft.Windows"
+        public static void InjectDLL(string path, string proc="Minecraft.Windows") // "Minecraft.Windows"
         {
             PostMessage("Finding process");
             Process[] targetProcessIndex = Process.GetProcessesByName(proc);
