@@ -7,6 +7,9 @@ namespace ModLoader
     {
         static void Main(string[] args)
         {
+
+
+
             FileIO.Initialize();
 
             if (FileIO.Folders.CheckCreate("mods"))
@@ -17,6 +20,8 @@ namespace ModLoader
                 Console.ReadKey();
             }
 
+            InjectionHandler.injectionStagedEvent += hookEvent;
+            
             // inject mods
             foreach (string file in Directory.GetFiles($"{FileIO.ConfigFolder.FullName}\\mods"))
             {
@@ -29,6 +34,11 @@ namespace ModLoader
             }
 
             Console.ReadLine();
+        }
+
+        private static void hookEvent(object sender, InjectEventArgs e)
+        {
+            Console.WriteLine(e.injectionStage);
         }
     }
 }
