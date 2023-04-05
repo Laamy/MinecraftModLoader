@@ -56,16 +56,18 @@ namespace ModLoader
             }
         }
 
-        public static void InjectDLL(string path, string proc="Minecraft.Windows") // "Minecraft.Windows"
+        public static void InjectDLL(string path, string proc = "Minecraft.Windows")
         {
             PostMessage("Finding process");
+
             Process[] targetProcessIndex = Process.GetProcessesByName(proc);
+
             if (targetProcessIndex.Length > 0)
             {
                 PostMessage("Applying packages");
                 applyAllApplicationPackages(path);
 
-                Process targetProcess = Process.GetProcessesByName(proc)[0];
+                Process targetProcess = targetProcessIndex[0];
                 IntPtr procHandle = OpenProcess(PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION | PROCESS_VM_WRITE | PROCESS_VM_READ, false, targetProcess.Id);
 
                 IntPtr loadLibraryAddr = GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA");
